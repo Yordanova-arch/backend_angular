@@ -1,16 +1,15 @@
-const router = require('express').Router();//this is factory function
+const router = require('express').Router();
 
-const { getAllThemas, createThema, getOneThemaById, update} = require('../services/Thema');
-const {createPost, editPost, deletePost} = require('../controllers/postController')
+const { getAllPhotos, createPhoto, getOnePhotoById, deletePhoto, getOnePhoto, like} = require('../services/Photo');
 
 const { isAuth } = require('../middlewares/guards');
 
 const { parseError } = require('../utilis');
-const preload = require('../middlewares/preload');
+
 
 
 router.get('/', async (req, res) => {
-    const data = await getAllThemas();
+    const data = await getAllPhotos();
     res.json(data);
 
 });
@@ -19,12 +18,11 @@ router.post('/',isAuth(), async (req, res) => {
     
     const data = {
         title: req.body.title,
-        description: req.body.description,
         imageUrl: req.body.imageUrl,
         author: req.user._id
     };
     try {
-        const result = await createThema(data);
+        const result = await createPhoto(data);
         // console.log(result)
         res.status(201).json(result);
     } catch (err) {
@@ -40,7 +38,7 @@ router.post('/',isAuth(), async (req, res) => {
 router.get('/:id', isAuth(), async (req, res) => {
     const id = req.params.id
     try {
-        const item =  getOneThemaById(id);
+        const item = await getOnePhotoById(id);
         
         res.status(200).json(item);
     } catch (err) {
@@ -51,10 +49,10 @@ router.get('/:id', isAuth(), async (req, res) => {
 
 });
 
-router.put('/:id', isAuth(), async (req, res) => {
+router.delete('/:id', isAuth(), async (req, res) => {
     
     try {
-        const result = await update(req.params.id, req.user._id, req.body);
+        const result = deletePhoto(req.params.id, req.user._id);
         // console.log(result)
         res.status(200).json(result);
     } catch (err) {
@@ -67,12 +65,27 @@ router.put('/:id', isAuth(), async (req, res) => {
 
 });
 
+router.put('like/:id', isAuth(), async (req, res) => {
+    const id = req.params.id;
+    const userId = req.user._id;
 
-router.post('/:id/posts',isAuth(),createPost);
-router.put('/:themeId/posts/:postId',isAuth(),editPost);
-router.delete('/:themeId/posts/:postId',isAuth(),deletePost);
+    const photo = await getOnePhoto(id);
 
+    if (!photo) {
+        return res.status(404).json({message:'Photo does not exist'})
+    }
+    try{
+        await like(id,userId);
+        res.status(200).json({message: 'Liked successful!'});
 
+    }catch(err) {
+        
+        res.status(403).json({ message: 'Already liked'});
+    }
+    
+    
+
+});
 
 
 

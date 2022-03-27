@@ -37,7 +37,7 @@ router.post('/register', async (req, res) => {
 
 router.post('/login', async (req, res) => {
     const validationResult = validateLoginForm(req.body)
-    console.log(req.body);
+    // console.log(req.body);
     
     if (!validationResult.success) {
         return res.status(400).json({
@@ -67,11 +67,10 @@ router.post('/login', async (req, res) => {
 
 
 router.post('/logout', (req, res) => {
-    res.status(200).json({message: 'Logout!'})
+    res.status(204).end();
 
 
 });
-
 
 
 
@@ -143,8 +142,6 @@ function validateLoginForm(payload) {
     }
 
 }
-
-
 
 
 module.exports = router;  

@@ -6,10 +6,10 @@ const shema = new Schema({
     description: {type: String, required:true, minlength: 5},
     imageUrl: {type: String, required: true, match: [/^https?/, 'Image must be valid URL'] },
     createdAt: {type:Date, default: Date.now},
-    author: {type:Schema.Types.ObjectId, ref:'User'}
+    author: {type:Schema.Types.ObjectId, ref:'User'},
+    posts: [{type:Schema.Types.ObjectId, ref:'Post', default: []}]
 
- 
-});
+ });
 
 
 module.exports = model('Thema', shema)

@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const cors = require('.//middlewares/cors');
 
 const themaController = require('./controllers/themaController');
+const photoController = require('./controllers/photoController');
 const userController = require('./controllers/userController');
 const auth = require('./middlewares/auth');
 
@@ -41,6 +42,7 @@ async function start() {
   app.use(auth());
 
   app.use('/thema', themaController);
+  app.use('/photo', photoController);
   app.use('/user', userController);
 
 
