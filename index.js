@@ -1,8 +1,16 @@
 const express = require('express');
+
 const mongoose = require('mongoose');
 const cors = require('.//middlewares/cors');
+
 const themaController = require('./controllers/themaController');
 const userController = require('./controllers/userController');
+const auth = require('./middlewares/auth');
+
+const port = 3000;
+
+
+const app = express();
 
 start();
 
@@ -26,19 +34,17 @@ async function start() {
 
   });
 
-
-  const app = express();
-  // app.use(urlencoded({extended:true}))
+ 
+  app.use(express.urlencoded({extended:true}))
   app.use(cors());
   app.use(express.json());
+  app.use(auth());
 
   app.use('/thema', themaController);
   app.use('/user', userController);
 
 
-  const port = 3000;
-
-  app.get('/', (req, res) => res.send('It works!'));
+  // app.get('/', (req, res) => res.send('It works!'));
 
   app.listen(port, () => {
     console.log(`REST Service is running on port ${port}...`)
